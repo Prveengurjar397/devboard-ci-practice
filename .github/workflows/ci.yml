@@ -1,4 +1,4 @@
-# Goal : Build the image for DevBoard Frontend and push to Docker hub 
+# Goal : Build the image for DevBoard Frontend and push to Docker hub , after linting code
 name: CI 
 
 on: 
@@ -6,7 +6,30 @@ on:
     branches: [master]
 
 jobs:
+  code-lint:
+    runs-on: uubuntu-latest
+    steps:
+    # Step 1: Clone the repository onto the runner
+      - name: Checkout Code
+        uses: actions/checkout@v7
+# Step 2: Set up node.js environment and enable npm caching
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify your preferred node version
+          cache: 'npm' #caches dependencies for faster future run
+    # Step 3: Install a clean slate of dependencies
+      - name: Install Dependencies
+        run: npm ci
+    # Step 4: Execute the lint command from package.json
+      - name: Run Linter
+        uses: wearerequired/lint-action@v3
+        with:
+          eslint: true
+          prettier: true
+        
   build-and-push:
+    needs: [code-lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
