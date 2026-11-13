@@ -24,7 +24,7 @@ jobs:
          
     # Step 3: Install a clean slate of dependencies
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
     # Step 4: Execute the lint command from package.json
       - name: Run Linter
         run: npm run lint
